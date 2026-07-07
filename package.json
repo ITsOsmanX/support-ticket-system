@@ -1,0 +1,15 @@
+{
+  "name": "support-ticket-system",
+  "version": "1.0.0",
+  "description": "Full-stack customer support ticket management system",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
