@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Support Desk</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Support Desk</h1>
+    <nav class="tabs">
+      <button class="tab-btn active" data-view="dashboard">Dashboard</button>
+      <button class="tab-btn" data-view="tickets">Tickets</button>
+      <button class="tab-btn" data-view="new">New Ticket</button>
+    </nav>
+  </header>
+
+  <main id="app">
+
+    <!-- Dashboard -->
+    <section id="view-dashboard" class="view active">
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card"><span class="stat-value" id="stat-total">-</span><span class="stat-label">Total Tickets</span></div>
+        <div class="stat-card"><span class="stat-value" id="stat-open">-</span><span class="stat-label">Open</span></div>
+        <div class="stat-card"><span class="stat-value" id="stat-progress">-</span><span class="stat-label">In Progress</span></div>
+        <div class="stat-card"><span class="stat-value" id="stat-resolved">-</span><span class="stat-label">Resolved</span></div>
+        <div class="stat-card urgent"><span class="stat-value" id="stat-urgent">-</span><span class="stat-label">Urgent</span></div>
+      </div>
+    </section>
+
+    <!-- Ticket list -->
+    <section id="view-tickets" class="view">
+      <div class="toolbar">
+        <input type="text" id="search-input" placeholder="Search by name, email, or subject..." />
+        <select id="filter-priority">
+          <option value="">All Priorities</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+        <select id="filter-status">
+          <option value="">All Statuses</option>
+          <option value="Open">Open</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+        </select>
+        <select id="sort-order">
+          <option value="desc">Newest First</option>
+          <option value="asc">Oldest First</option>
+        </select>
+        <label class="checkbox-label">
+          <input type="checkbox" id="filter-urgent" /> Urgent only
+        </label>
+        <a id="export-csv" href="/api/tickets/export.csv" class="btn btn-secondary">Export CSV</a>
+      </div>
+      <div id="ticket-table-wrapper">
+        <table class="ticket-table">
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Customer</th>
+              <th>Subject</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody id="ticket-table-body"></tbody>
+        </table>
+        <p id="empty-state" class="empty-state" hidden>No tickets match your filters.</p>
+      </div>
+    </section>
+
+    <!-- New ticket form -->
+    <section id="view-new" class="view">
+      <form id="ticket-form" novalidate>
+        <h2>Submit a Support Ticket</h2>
+
+        <div class="form-row">
+          <label for="customerName">Customer Name</label>
+          <input type="text" id="customerName" name="customerName" />
+          <span class="field-error" data-error-for="customerName"></span>
+        </div>
+
+        <div class="form-row">
+          <label for="customerEmail">Customer Email</label>
+          <input type="email" id="customerEmail" name="customerEmail" />
+          <span class="field-error" data-error-for="customerEmail"></span>
+        </div>
+
+        <div class="form-row">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject" />
+          <span class="field-error" data-error-for="subject"></span>
+        </div>
+
+        <div class="form-row">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="5"></textarea>
+          <span class="field-error" data-error-for="description"></span>
+        </div>
+
+        <div class="form-row">
+          <label for="priority">Priority</label>
+          <select id="priority" name="priority">
+            <option value="">Select priority...</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+          <span class="field-error" data-error-for="priority"></span>
+        </div>
+
+        <div id="duplicate-warning" class="warning-banner" hidden></div>
+        <div id="form-general-error" class="field-error"></div>
+
+        <button type="submit" class="btn btn-primary">Submit Ticket</button>
+      </form>
+    </section>
+
+    <!-- Ticket detail modal -->
+    <div id="ticket-modal" class="modal" hidden>
+      <div class="modal-content">
+        <button class="modal-close" id="modal-close">&times;</button>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
