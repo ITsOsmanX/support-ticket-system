@@ -12,7 +12,7 @@ const tmpDb = path.join(os.tmpdir(), `tickets-test-${Date.now()}.db`);
 process.env.DB_PATH = tmpDb;
 process.env.PORT = 0; // let the OS pick a free port
 
-const { server } = require('../server');
+const { server, db } = require('../server');
 
 let baseUrl;
 
@@ -28,7 +28,10 @@ test.before(async () => {
 
 test.after(async () => {
   await new Promise((resolve) => server.close(resolve));
-  fs.rmSync(tmpDb, { force: true });
+  // Close the SQLite handle before deleting the file - on Windows the OS
+  // keeps an open database file locked, so rm would otherwise fail with EPERM.
+  try { db.close(); } catch { /* already closed */ }
+  fs.rmSync(tmpDb, { force: true, maxRetries: 3 });
 });
 
 test('POST /api/tickets creates a ticket end-to-end', async () => {
