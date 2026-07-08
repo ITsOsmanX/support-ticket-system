@@ -4,15 +4,7 @@ const { DatabaseSync } = require('node:sqlite');
 const path = require('node:path');
 const fs = require('node:fs');
 
-/**
- * Creates (or opens) the SQLite database and ensures the schema exists.
- * Using Node's built-in `node:sqlite` module (stable behind a flag-free
- * experimental API since Node 22.5) means the project needs zero npm
- * dependencies to persist data - `node server.js` is enough.
- *
- * @param {string} dbPath - path to the sqlite file, or ':memory:' for tests
- * @returns {DatabaseSync}
- */
+
 function createDatabase(dbPath) {
   if (dbPath !== ':memory:') {
     fs.mkdirSync(path.dirname(dbPath), { recursive: true });

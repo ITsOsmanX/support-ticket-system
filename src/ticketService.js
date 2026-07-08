@@ -2,12 +2,7 @@
 
 const { validateTicketInput, validateStatus } = require('./validation');
 
-/**
- * Pure function: decides whether a ticket counts as urgent.
- * Exported separately so it can be unit tested without touching the DB.
- * @param {{priority: string, description: string}} ticket
- * @returns {boolean}
- */
+
 function computeIsUrgent({ priority, description }) {
   const highPriority = priority === 'High';
   const mentionsUrgent = typeof description === 'string' && description.toLowerCase().includes('urgent');
@@ -36,16 +31,11 @@ function rowToTicket(row) {
 }
 
 class TicketService {
-  /** @param {import('node:sqlite').DatabaseSync} db */
   constructor(db) {
     this.db = db;
   }
 
-  /**
-   * Looks up prior tickets submitted by the same email address.
-   * Used both to warn about duplicate customers and to power the
-   * "customer ticket history" link in the UI.
-   */
+  
   findByEmail(email) {
     const stmt = this.db.prepare(
       `SELECT * FROM tickets WHERE customer_email = ? ORDER BY created_at DESC`
@@ -73,8 +63,7 @@ class TicketService {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
-    // Insert first with a placeholder reference, then patch it with the
-    // human-friendly TCK-000123 form now that we know the auto-increment id.
+
     const result = insert.run(
       'PENDING',
       input.customerName.trim(),
@@ -101,9 +90,7 @@ class TicketService {
     return rowToTicket(row);
   }
 
-  /**
-   * @param {{search?: string, priority?: string, status?: string, sort?: 'asc'|'desc'}} filters
-   */
+
   listTickets(filters = {}) {
     let query = `SELECT * FROM tickets WHERE 1=1`;
     const params = [];
@@ -151,10 +138,7 @@ class TicketService {
     return { ok: true, ticket: this.getTicketById(id) };
   }
 
-  /**
-   * Partial update of editable ticket fields (used by the ticket detail
-   * screen for corrections). Re-evaluates urgency if priority/description change.
-   */
+
   updateTicket(id, fields) {
     const existing = this.getTicketById(id);
     if (!existing) {
@@ -214,7 +198,6 @@ class TicketService {
     };
   }
 
-  /** Initiative feature: export the current (filtered) ticket list as CSV. */
   exportCsv(filters = {}) {
     const tickets = this.listTickets(filters);
     const header = [

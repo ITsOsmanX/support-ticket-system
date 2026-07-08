@@ -3,19 +3,14 @@
 const PRIORITIES = ['Low', 'Medium', 'High'];
 const STATUSES = ['Open', 'In Progress', 'Resolved'];
 
-// Reasonably strict, dependency-free email check. Not RFC 5322-complete,
-// but rejects the obvious malformed inputs a support form would see.
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function isNonEmptyString(value) {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-/**
- * Validates the payload for creating a new ticket.
- * @param {object} data
- * @returns {{valid: boolean, errors: Record<string,string>}}
- */
+
 function validateTicketInput(data) {
   const errors = {};
 
@@ -49,8 +44,7 @@ function validateTicketInput(data) {
     errors.priority = `Priority must be one of: ${PRIORITIES.join(', ')}.`;
   }
 
-  // Status is optional on creation (defaults to "Open"), but if the
-  // caller supplies one it must be valid.
+
   if (data.status !== undefined && data.status !== null) {
     if (!STATUSES.includes(data.status)) {
       errors.status = `Status must be one of: ${STATUSES.join(', ')}.`;
@@ -60,11 +54,7 @@ function validateTicketInput(data) {
   return { valid: Object.keys(errors).length === 0, errors };
 }
 
-/**
- * Validates a status transition payload.
- * @param {*} status
- * @returns {{valid: boolean, error?: string}}
- */
+
 function validateStatus(status) {
   if (!isNonEmptyString(status)) {
     return { valid: false, error: 'Status is required.' };
