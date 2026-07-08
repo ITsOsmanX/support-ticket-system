@@ -96,9 +96,9 @@ class TicketService {
     const params = [];
 
     if (filters.search) {
-      query += ` AND (LOWER(customer_name) LIKE ? OR LOWER(customer_email) LIKE ? OR LOWER(subject) LIKE ?)`;
+      query += ` AND (LOWER(customer_name) LIKE ? OR LOWER(customer_email) LIKE ? OR LOWER(subject) LIKE ? OR LOWER(description) LIKE ? OR LOWER(reference) LIKE ?)`;
       const term = `%${filters.search.toLowerCase()}%`;
-      params.push(term, term, term);
+      params.push(term, term, term, term, term);
     }
 
     if (filters.priority) {
